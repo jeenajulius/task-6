@@ -1,0 +1,279 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import linear_model
+
+Assignment5
+
+Ground Cricket Chirps
+In The Song of Insects (1948) by George W. Pierce, Pierce mechanically measured the frequency (the number of wing vibrations per second) of chirps (or pulses of sound) made by a striped ground cricket, at various ground temperatures. Since crickets are ectotherms (cold-blooded), the rate of their physiological processes and their overall metabolism are influenced by temperature. Consequently, there is reason to believe that temperature would have a profound effect on aspects of their behavior, such as chirp frequency.
+
+In general, it was found that crickets did not sing at temperatures colder than 60º F. or warmer than 100º F.
+
+ground_cricket_data = {"Chirps/Second": [20.0, 16.0, 19.8, 18.4, 17.1, 15.5, 14.7,
+                                         15.7, 15.4, 16.3, 15.0, 17.2, 16.0, 17.0,
+                                         14.4],
+                       "Ground Temperature": [88.6, 71.6, 93.3, 84.3, 80.6, 75.2, 69.7,
+                                              71.6, 69.4, 83.3, 79.6, 82.6, 80.6, 83.5,
+                                              76.3]}
+df = pd.DataFrame(ground_cricket_data)
+df
+   Chirps/Second	Ground Temperature
+0      	20.0       	88.6
+1     	16.0      	71.6
+2	      19.8	      93.3
+3	      18.4      	84.3
+4     	17.1	      80.6
+5     	15.5	      75.2
+6      	14.7      	69.7
+7     	15.7	      71.6
+8	      15.4	      69.4
+9	      16.3	      83.3
+10	    15.0      	79.6
+11    	17.2      	82.6
+12	    16.0      	80.6
+13    	17.0	      83.5
+14    	14.4      	76.3
+
+from sklearn.linear_model import LinearRegression 
+model=LinearRegression()
+
+X=df["Chirps/Second"]
+Y=df["Ground Temperature"]
+X=(np.array(X).reshape(-1,1))
+Y=np.array(Y).reshape(-1,1)
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(X,Y,test_size=0.2,random_state=57)
+
+Tasks
+
+1.Find the linear regression equation for this data.
+2.Chart the original data and the equation on the chart.
+3.Find the equation's  score (use the .score method) to determine whether the
+equation is a good fit for this data. (0.8 and greater is considered a strong correlation.) 4. Extrapolate data: If the ground temperature reached 95, then at what approximate rate would you expect the crickets to be chirping? 5. Interpolate data: With a listening device, you discovered that on a particular morning the crickets were chirping at a rate of 18 chirps per second. What was the approximate ground temperature that morning?
+
+x_train=np.array(x_train).reshape(-1,1)
+x_test=np.array(x_test).reshape(-1,1)
+y_train=np.array(y_train).reshape(-1,1)
+y_test=np.array(y_test).reshape(-1,1)
+
+#Find the linear regression equation for this data.
+model.fit(y_train,x_train)
+LinearRegression()
+model.intercept_ #B0
+array([0.45643396])
+model.coef_ #B1
+array([[0.20531156]])
+y_train
+array([[84.3],
+       [88.6],
+       [83.5],
+       [71.6],
+       [71.6],
+       [83.3],
+       [82.6],
+       [93.3],
+       [69.4],
+       [76.3],
+       [75.2],
+       [69.7]])
+from sklearn.metrics import mean_absolute_error,r2_score
+mean_absolute_error(x_train,model.predict(y_train))
+0.709703769194522
+mean_absolute_error(x_test,model.predict(y_test))
+0.966411306450072
+
+#Finding the R2Score for training data
+r2_score(x_train,model.predict(y_train))
+0.7651929150551957
+
+#Finding the R2Score for test data
+r2_score(x_test,model.predict(y_test))
+-0.9284588567297276
+model.predict(y_test)
+y_test
+array([[79.6],
+       [80.6],
+       [80.6]])
+x_test
+array([[15. ],
+       [16. ],
+       [17.1]])
+r2_score(x_train,model.predict(y_train))
+0.7651929150551957
+r2_score(x_test,model.predict(y_test))
+-0.9284588567297276
+
+#ground temperature reached 95, 
+#then at what approximate rate 
+#would you expect the crickets to be chirping?
+d={"Ground Temperature":[int(95)]}
+D=pd.DataFrame(d)
+model.predict(D)
+array([[19.9610319]])
+
+#chirping at a rate of 18 chirps per second. 
+#What was the approximate ground temperature that morning?
+model.fit(x_train,y_train)
+x={"Chirps":[18.0]}
+c=pd.DataFrame(x)
+model.predict(c)
+array([[83.96174603]])
+
+Assignment6
+
+Brain vs. Body Weight
+In the file brain_body.txt, the average brain and body weight for a number of mammal species are recorded. Load this data into a Pandas data frame.
+
+Tasks
+1.Find the linear regression equation for this data for brain weight to body weight.
+2.Chart the original data and the equation on the chart.
+3.Find the equation's  score (use the .score method) to determine whether the
+equation is a good fit for this data. (0.8 and greater is considered a strong correlation.)
+
+df = pd.read_fwf("brain_body.txt")
+df
+    Brain 	Body
+0  	3.385  	44.5
+1	  0.480   15.5
+2	  1.350 	8.1
+3	 465.000	423.0
+4	  36.330	119.5
+...	...	...
+57	160.000	169.0
+58	0.900 	2.6
+59	1.620 	11.4
+60	0.104 	2.5
+61	4.235 	50.4
+62 rows × 2 columns
+
+X=df["Brain"]
+X=np.array(X).reshape(-1,1)
+
+Y=df["Body"]
+Y=np.array(Y).reshape(-1,1)
+
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test = train_test_split(X,Y,test_size=0.2,random_state=577)
+model.fit(x_train,y_train)
+LinearRegression()
+model.predict(x_test)
+array([[109.84441857],
+       [100.98041508],
+       [ 99.77703026],
+       [ 99.7799207 ],
+       [126.32953811],
+       [ 99.70187893],
+       [340.54937898],
+       [100.4023279 ],
+       [181.57540334],
+       [103.05189416],
+       [ 99.75197981],
+       [100.64319756],
+       [100.08919734]])
+#B1
+model.coef_
+array([[0.96347864]])
+#B0
+model.intercept_
+array([99.67971892])
+
+#Mean Absolute Error
+mean_absolute_error(y_test,model.predict(x_test))
+94.28755222657492
+
+#r2 Score
+r2_score(y_test,model.predict(x_test))
+0.5530752763134328
+We can say that the R2 score is not above 0.8
+
+Assignment7
+
+Salary Discrimination
+The file salary.txt contains data for 52 tenure-track professors at a small Midwestern college. This data was used in legal proceedings in the 1980s about discrimination against women in salary.
+
+The data in the file, by column:
+
+1.Sex. 1 for female, 0 for male.
+2.Rank. 1 for assistant professor, 2 for associate professor, 3 for full professor.
+3.Year. Number of years in current rank.
+4.Degree. Highest degree. 1 for doctorate, 0 for master's.
+5.YSdeg. Years since highest degree was earned.
+6.Salary. Salary/year in dollars.
+
+Tasks
+
+1.Find the linear regression equation for this data using columns 1-5 to column 6.
+2.Find the selection of columns with the best  score.
+3.Report whether sex is a factor in salary.
+
+df = pd.read_fwf("salary.txt", header=None, 
+                 names=["Sex", "Rank", "Year", "Degree", "YSdeg", "Salary"])
+X=df.drop(["Salary"],axis=1)
+X.shape
+(52, 5)
+Y=df["Salary"]
+Y=np.array(Y).reshape(-1,1)
+Y.shape
+(52, 1)
+
+#r2 Score for "SEX"
+
+x_train,x_test,y_train,y_test = train_test_split(np.array(X["Sex"]).reshape(-1,1),Y,test_size=0.2,random_state=5777)
+model.fit(x_train,y_train)
+r2_score(y_test,model.predict(x_test))
+
+0.15482175407585452
+
+importance = model.coef_
+importance
+array([[-2532.86060606]])
+
+#r2 score for Rank
+x_train,x_test,y_train,y_test = train_test_split(np.array(X["Rank"]).reshape(-1,1),Y,test_size=0.2,random_state=5777)
+model.fit(x_train,y_train)
+r2_score(y_test,model.predict(x_test))
+
+0.8396881472421143
+
+importance = model.coef_
+importance
+array([[6027.76666667]])
+
+#r2 score for Year
+x_train,x_test,y_train,y_test = train_test_split(np.array(X["Year"]).reshape(-1,1),Y,test_size=0.2,random_state=5777)
+model.fit(x_train,y_train)
+r2_score(y_test,model.predict(x_test))
+0.5412226457515474
+
+importance = model.coef_
+importance
+array([[767.02333819]])
+
+#r2 score for Degree
+x_train,x_test,y_train,y_test = train_test_split(np.array(X["Degree"]).reshape(-1,1),Y,test_size=0.2,random_state=5777)
+model.fit(x_train,y_train)
+r2_score(y_test,model.predict(x_test))
+
+-0.02171647266706933
+
+importance = model.coef_
+importance
+array([[-327.4974359]])
+
+#r2 score for YSdeg
+x_train,x_test,y_train,y_test = train_test_split(np.array(X["YSdeg"]).reshape(-1,1),Y,test_size=0.2,random_state=5777)
+model.fit(x_train,y_train)
+r2_score(y_test,model.predict(x_test))
+
+0.5103802332029391
+
+importance = model.coef_
+importance
+array([[383.96394466]])
+
+We can infer that sex is not important based on it being the least important coeffecient
+
+ 
