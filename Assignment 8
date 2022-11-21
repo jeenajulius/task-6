@@ -1,0 +1,374 @@
+
+Assignment8
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import linear_model
+
+How Much is Your Car Worth?
+
+Data about the retail price of 2005 General Motors cars can be found in car_data.csv.
+
+The columns are:
+1.Price: suggested retail price of the used 2005 GM car in excellent condition.
+2.Mileage: number of miles the car has been driven
+3.Make: manufacturer of the car such as Saturn, Pontiac, and Chevrolet
+4.Model: specific models for each car manufacturer such as Ion, Vibe, Cavalier
+5.Trim (of car): specific type of car model such as SE Sedan 4D, Quad Coupe 2D
+6.Type: body type such as sedan, coupe, etc.
+7.Cylinder: number of cylinders in the engine
+8.Liter: a more specific measure of engine size
+9.Doors: number of doors
+10.Cruise: indicator variable representing whether the car has cruise control (1 = cruise)
+11.Sound: indicator variable representing whether the car has upgraded speakers (1 = upgraded)
+12.Leather: indicator variable representing whether the car has leather seats (1 = leather)
+
+Tasks, Part 1
+1.Find the linear regression equation for mileage vs price.
+2.Chart the original data and the equation on the chart.
+3.Find the equation's  score (use the .score method) to determine whether the
+equation is a good fit for this data. (0.8 and greater is considered a strong correlation.)
+
+df = pd.read_csv("car_data.csv")
+df
+
+     Price       Mileage Make 	 Model 	 Trim            Type   Cylinder	Liter	Doors	Cruise	Sound	Leather
+0	  17314.103129	8221	Buick 	Century 	Sedan 4D    	Sedan    	6       	3.1 	4	     1    	1   	1
+1	  17542.036083	9135	Buick	  Century 	Sedan 4D    	Sedan	    6        	3.1 	4    	 1    	1   	0
+2 	16218.847862	13196	Buick 	Century  	Sedan 4D    	Sedan	    6        	3.1  	4    	 1    	1   	0
+3 	16336.913140	16342	Buick 	Century 	Sedan 4D	    Sedan   	6       	3.1	  4    	 1      0     0
+4 	16339.170324	19832	Buick 	Century 	Sedan 4D	    Sedan   	6	        3.1	  4    	 1	    0   	1
+... 	...	          ...	...     	...	       ...	      ...     	...	      ...	 ...	   ...  	...	...
+799	16507.070267	16229	Saturn	L Series	L300 Sedan 4D	Sedan	    6	        3.0  	4    	 1     	0   	0
+800	16175.957604	19095	Saturn	L Series	L300 Sedan 4D	Sedan   	6	        3.0 	4     	1   	1   	0
+801	15731.132897	20484	Saturn	L Series	L300 Sedan 4D	Sedan    	6       	3.0	  4     	1   	1   	0
+802	15118.893228	25979	Saturn	L Series	L300 Sedan 4D	Sedan   	6       	3.0 	4     	1   	1   	0
+803	13585.636802	35662	Saturn	L Series	L300 Sedan 4D	Sedan	    6       	3.0 	4     	1   	0   	0
+804 rows × 12 columns
+
+X=df.drop(["Price"],axis=1)
+X.head()
+  Mileage	Make	Model 	Trim      Type	Cylinder	Liter	Doors	Cruise Sound	Leather
+0	8221	 Buick	Century	Sedan 4D	Sedan	  6	       3.1	  4   	1	      1	    1
+1	9135	 Buick	Century	Sedan 4D	Sedan  	6      	 3.1	  4   	1     	1   	0
+2	13196	 Buick	Century	Sedan 4D	Sedan  	6	       3.1  	4	    1     	1   	0
+3	16342	 Buick	Century	Sedan 4D	Sedan	  6      	 3.1  	4	    1	      0   	0
+4	19832	 Buick	Century	Sedan 4D	Sedan 	6	       3.1  	4   	1     	0   	1
+
+Y=df["Price"]
+Y.head()
+
+0    17314.103129
+1    17542.036083
+2    16218.847862
+3    16336.913140
+4    16339.170324
+Name: Price, dtype: float64
+
+Y=np.array(Y).reshape(-1,1)
+
+X.shape
+(804, 11)
+Y.shape
+(804, 1)
+
+from sklearn.model_selection import train_test_split
+
+x_train,x_test,y_train,y_test=train_test_split(X,Y,test_size=0.2,random_state=1)
+
+from sklearn.linear_model import LinearRegression
+
+model=LinearRegression()
+model.fit(np.array(x_train['Mileage']).reshape(-1,1),y_train)
+
+LinearRegression()
+
+model.predict(np.array(x_test['Mileage']).reshape(-1,1))
+
+array([[20644.91453158],
+       [19176.53590721],
+       [24373.41443008],
+       [20920.89730165],
+       [20038.12815657],
+       [21851.14368068],
+       [22518.55745877],
+       [23422.84506241],
+       [22682.5076192 ],
+       [21593.9468665 ],
+       [21297.47032639],
+       [20264.24275283],
+       [20469.52201621],
+       [21067.76932037],
+       [21601.63203027],
+       [20260.48556165],
+       [22031.31807574],
+       [21851.48524351],
+       [21488.57473214],
+       [22785.31803231],
+       [20345.02236313],
+       [22530.51215797],
+       [21376.02977826],
+       [23605.58117872],
+       [24442.06855976],
+       [20070.57662582],
+       [19863.24798544],
+       [20342.11907904],
+       [22822.03603699],
+       [19401.28425214],
+       [24338.7458024 ],
+       [20468.83889054],
+       [21158.62503427],
+       [18827.11712779],
+       [21625.8829915 ],
+       [20755.92245271],
+       [22829.55041934],
+       [21076.82073547],
+       [20961.20171608],
+       [18663.33774878],
+       [20611.27059241],
+       [19924.04616993],
+       [20883.15460846],
+       [21296.10407505],
+       [22257.432672  ],
+       [20941.04950886],
+       [21071.18494871],
+       [21463.98220808],
+       [20924.82527424],
+       [20469.35123479],
+       [20248.01851821],
+       [24353.09144144],
+       [22502.33322415],
+       [21157.42956435],
+       [22083.06484512],
+       [21897.2546633 ],
+       [19731.74629426],
+       [23785.41401094],
+       [21816.98739726],
+       [22981.71666199],
+       [20350.14580564],
+       [18908.06751951],
+       [21596.16702492],
+       [23359.65593807],
+       [23833.57437057],
+       [18453.10582431],
+       [19971.18184106],
+       [22176.99462454],
+       [17648.55456827],
+       [20981.18314189],
+       [20762.07058373],
+       [21047.95867598],
+       [21101.0716967 ],
+       [20382.59427489],
+       [21477.13237719],
+       [22762.94566667],
+       [22593.7012823 ],
+       [21577.21028762],
+       [21975.64333376],
+       [22229.42451959],
+       [21140.18064122],
+       [19397.69784238],
+       [21417.3588812 ],
+       [21956.34503362],
+       [21044.03070339],
+       [20647.13469001],
+       [20314.45248946],
+       [21098.16841261],
+       [22277.58487922],
+       [21925.77515996],
+       [21797.34753429],
+       [23941.84978902],
+       [20994.50409242],
+       [20593.33854362],
+       [21380.29931369],
+       [20338.36188786],
+       [21190.04881502],
+       [20047.17957168],
+       [24596.79652367],
+       [21927.99531838],
+       [22547.93186252],
+       [20381.39880497],
+       [24086.84321216],
+       [22655.01181105],
+       [22347.09291599],
+       [22813.66774755],
+       [23603.19023888],
+       [21606.41390995],
+       [21089.45856034],
+       [20033.68783972],
+       [21115.41733574],
+       [21299.86126623],
+       [21410.3568431 ],
+       [19881.35081566],
+       [23620.43916201],
+       [20522.12269268],
+       [21064.01212919],
+       [19341.16919332],
+       [21783.68502092],
+       [20798.61780699],
+       [20939.17091328],
+       [23646.22715599],
+       [23037.04984114],
+       [19636.62104493],
+       [23972.41966269],
+       [20410.43164588],
+       [21786.41752359],
+       [19994.40811379],
+       [24080.01195547],
+       [20555.93741327],
+       [20851.04770204],
+       [20061.3544293 ],
+       [23037.04984114],
+       [20924.65449282],
+       [23201.85390866],
+       [22336.67524954],
+       [20225.47537115],
+       [21027.97725018],
+       [22142.32599686],
+       [18502.46165385],
+       [21485.32988522],
+       [21040.95663788],
+       [21560.30292733],
+       [23252.23442671],
+       [19992.87108103],
+       [21176.72786449],
+       [21136.08188721],
+       [21443.14687519],
+       [21215.15368334],
+       [23870.97550092],
+       [22411.30672882],
+       [21011.06988988],
+       [21305.32627157],
+       [21541.51697145],
+       [20573.52789923],
+       [20343.31454896],
+       [21244.52808708],
+       [21353.14506837],
+       [20643.20671741],
+       [23033.29264996],
+       [20636.71702356]])
+#B0
+model.intercept_
+array([24747.25495215])
+model.coef_
+
+#B1
+model.coef_
+array([[-0.17078142]])
+from sklearn.metrics import r2_score
+
+#Getting R2SCORE
+r2_score(y_test,model.predict(np.array(x_test['Mileage']).reshape(-1,1)))
+0.02460778370101413
+AS R2 SCORE is close to 1,we can say that mileage is a good feature in predicting price.
+
+Tasks, Part 2
+1.Use mileage, cylinders, liters, doors, cruise, sound, and leather to find the linear regression equation.
+2.Find the equation's  score (use the .score method) to determine whether the
+equation is a good fit for this data. (0.8 and greater is considered a strong correlation.) 3. Find the combination of the factors that is the best predictor for price.
+
+Tasks, Hard Mode
+
+1.Research dummy variables in scikit-learn to see how to use the make, model, and body type.
+2.Find the best combination of factors to predict price.
+df
+
+      Price    	 Mileage	Make	Model	       Trim   	  Type	Cylinder	Liter  	Doors	Cruise Sound Leather
+0	  17314.103129	8221	 Buick	Century   	Sedan 4D	  Sedan 	6      	 3.1	    4    	1     	1  	1
+1	  17542.036083	9135 	 Buick	Century   	Sedan 4D	  Sedan  	6	       3.1    	4	    1     	1  	0
+2	  16218.847862	13196	 Buick	Century   	Sedan 4D	  Sedan	  6        3.1	    4	    1     	1 	0
+3	  16336.913140	16342	 Buick	Century   	Sedan 4D	  Sedan	  6	       3.1	    4	    1     	0 	0
+4	  16339.170324	19832	 Buick	Century   	Sedan 4D	  Sedan	  6	       3.1	    4	    1     	0	  1
+   	...          	...	    ...   	...	        ...       	...	...	       ...	   ...	 ...   	 ... ...
+799	16507.070267	16229	Saturn	L Series	L300 Sedan 4D	Sedan  	6	       3.0     	4	    1     	0  	0
+800	16175.957604	19095	Saturn	L Series	L300 Sedan 4D	Sedan  	6	       3.0    	4   	1     	1  	0
+801	15731.132897	20484	Saturn	L Series	L300 Sedan 4D	Sedan 	6      	 3.0    	4 	  1     	1 	0
+802	15118.893228	25979	Saturn	L Series	L300 Sedan 4D	Sedan 	6	       3.0    	4    	1      	1 	0
+803	13585.636802	35662	Saturn	L Series	L300 Sedan 4D	Sedan 	6	       3.0    	4   	1     	0 	0
+804 rows × 12 columns
+
+X=df.drop(["Price","Make","Model","Trim","Type"],axis=1)
+X
+
+   Mileage Cylinder	Liter	Doors	Cruise	Sound	Leather
+0 	8221	   6	    3.1	   4	    1	       1	1
+1 	9135   	 6	    3.1	   4	    1	       1	0
+2	  13196  	 6	    3.1	   4	    1	       1	0
+3	  16342	   6	    3.1	   4	    1	       0	0
+4	  19832	   6	    3.1	   4	    1	       0	1
+...	...    	...	    ... 	...   	...   	...	...
+799	16229	   6	    3.0	   4	    1	       0	0
+800	19095	   6	    3.0	   4	    1	       1	0
+801	20484	   6	    3.0	   4	    1	       1	0
+802	25979	   6	    3.0	   4	    1	       1	0
+803	35662	   6	    3.0	   4	    1	       0	0
+804 rows × 7 columns
+
+from sklearn.model_selection import train_test_split
+
+x_train,x_test,y_train,y_test =train_test_split(X,Y,test_size=0.2,random_state=13)
+x_train.shape
+(643, 7)
+
+x_test.shape
+(161, 7)
+
+y_train.shape
+(643, 1)
+
+y_test.shape
+(161, 1)
+
+from sklearn.linear_model import LinearRegression 
+model=LinearRegression()
+
+model.fit(x_train,y_train)
+
+LinearRegression()
+
+b0=model.intercept_
+b0 #B0
+
+array([7564.09509458])
+
+b1=model.coef_
+b1[0]
+b1[0][0] #B1
+
+-0.19076916140680192
+
+model.coef_ # all Beta values
+array([[-1.90769161e-01,  3.06778470e+03, -7.33182412e+01,
+        -1.30063855e+03,  6.57922662e+03, -2.20243705e+03,
+         3.59338964e+03]])
+
+r2_score(y_test,model.predict(np.array(x_test).reshape(-1,7)))
+0.48720382272250895
+
+y_test.shape
+(161, 1)
+
+x_test.shape
+(161, 7)
+
+model.get_params()
+
+{'copy_X': True,
+ 'fit_intercept': True,
+ 'n_jobs': None,
+ 'normalize': False,
+ 'positive': False}
+
+#negative values show negative correlation
+x_train.corr()
+#WE see that Liter and Cylinder have good correlation
+
+           Mileage	Cylinder	Liter	     Doors	   Cruise   	Sound	  Leather
+Mileage  	 1.000000	-0.015914	-0.000459	-0.026742	 0.060993	-0.057356	 0.007112
+Cylinder	-0.015914	 1.000000	 0.957031	 0.023642	 0.342399	-0.076362	 0.058018
+Liter	    -0.000459	 0.957031	 1.000000	-0.059097	 0.362552	-0.050196	 0.069207
+Doors	    -0.026742	 0.023642	-0.059097	 1.000000	-0.019306	-0.054020	-0.057258
+Cruise	   0.060993	 0.342399	 0.362552	-0.019306	 1.000000	-0.087630	-0.116615
+Sound	    -0.057356	-0.076362	-0.050196	-0.054020	-0.087630	 1.000000	 0.169760
+Leather	   0.007112	 0.058018	 0.069207	-0.057258	-0.116615	 0.169760	 1.000000
+ 
